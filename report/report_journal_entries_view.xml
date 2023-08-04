@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+	<data>
+		<template id="journal_entry_template_report_view">
+			<t t-call="web.internal_layout" t-style="
+				    @font-face {
+                    font-family: 'Tajawal-Regular';
+                    src: local('Tajawal'), local('Tajawal'),
+                    url(/bi_print_journal_entries/static/src/fonts/Tajawal-Regular.ttf) format('opentype');
+                    }
+                    t{
+                    font-family: Tajawal-Regular !important;
+                    }
+                    ">
+				<t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+				<style>
+                    @font-face {
+                    font-family: 'Tajawal-Black';
+                    src: local('Tajawal'), local('Tajawal'), url(/bi_print_journal_entries/static/src/fonts/Tajawal-Black.ttf)
+                    format('opentype');
+                    }
+                    @font-face {
+                    font-family: 'Tajawal-Bold';
+                    src: local('Tajawal'), local('Tajawal'), url(/bi_print_journal_entries/static/src/fonts/Tajawal-Bold.ttf)
+                    format('opentype');
+                    }
+                    @font-face {
+                    font-family: 'Tajawal-ExtraBold';
+                    src: local('Tajawal'), local('Tajawal'),
+                    url(/bi_print_journal_entries/static/src/fonts/Tajawal-ExtraBold.ttf) format('opentype');
+                    }
+                    @font-face {
+                    font-family: 'ExtraLigh';
+                    src: local('Tajawal'), local('Tajawal'),
+                    url(/bi_print_journal_entries/static/src/fonts/Tajawal-ExtraLigh.ttf) format('opentype');
+                    }
+                    @font-face {
+                    font-family: 'Tajawal-Light';
+                    src: local('Tajawal'), local('Tajawal'), url(/bi_print_journal_entries/static/src/fonts/Tajawal-Light.ttf)
+                    format('opentype');
+                    }
+                    @font-face {
+                    font-family: 'Tajawal-Medium';
+                    src: local('Tajawal'), local('Tajawal'), url(/bi_print_journal_entries/static/src/fonts/Tajawal-Medium.ttf)
+                    format('opentype');
+                    }
+                    @font-face {
+                    font-family: 'Tajawal-Regular';
+                    src: local('Tajawal'), local('Tajawal'),
+                    url(/bi_print_journal_entries/static/src/fonts/Tajawal-Regular.ttf) format('opentype');
+                    }
+                    .regular{
+                    font-family: Tajawal-Regular !important;
+                    }
+                    <!-- .regular{
+                    font-family: Adobe Arabic;
+                    } -->
+                    .black{
+                    font-family: Tajawal-Black !important;
+                    /*font-weight: bold;*/
+                    }
+                    .light{
+                    font-family: Tajawal-Light;
+                    }
+                    .address_block span{
+                    line-height: initial !important;
+                    }
+                    .table-border {
+                        border: 1px solid !important;
+                    }
+                    table{
+                        margin-top: 3px !important;
+                    }
+                    .product_block td{
+                        border-right: 1px solid;
+                        border-left: 1px solid;
+                        border-bottom: 1px solid;
+                        border-top: 0px !important;
+                        padding: 5px 0px 5px 0px !important;
+                    }
+                    .header {
+                      margin-bottom: 3px !important
+                    }
+                </style>
+				<div class="page regular">
+					<br/>
+					<div class="oe_structure "/>
+					<div id="company_detail" class="" style="margin-top:3px;margin-bottom:3px;margin-left:4px">
+
+
+						<div style="text-align: right;font-size: 20px;" class="">
+							<t t-raw="o.company_id.name or ''"/>
+						</div>
+						<div style="text-align: right;font-size: 20px;" class="">
+							<span><t t-raw="o.company_id.city or ''"/> - <t t-raw="o.company_id.country_id.name or ''"/> </span>
+						</div>
+						
+						<div style="text-align: right;font-size: 20px;" class="">
+							<span>Company Registry:</span><span t-raw="o.company_id.company_registry or ''"/><span></span>
+						</div>
+						
+
+
+					</div>
+					<div>
+						<h2 class="text-center mb32">
+							<strong><p t-field="o.name"/></strong> <!-- Journal Entry -> "journal name" -->
+						</h2>
+					</div>
+					<br/>
+
+					<table style="width:100%;margin:0px auto;background:white;border:1px solid #e1e1e1;" class="table table-condensed">
+						<tbody>
+							<!--<tr>
+								<td><strong>رقم القيد : </strong></td>
+								<td><p t-field="o.name"/></td>
+								<td><strong>نوع القيد :</strong></td>
+								<td><p t-field="o.journal_id"/></td>
+							</tr> -->
+							<tr>
+								<td><strong>التاريخ :</strong></td>
+								<td><span t-field="o.date" t-field-options='{"date-format": "DD/mm/yyyy"}'/></td>
+								<td><strong>الرقم المرجعي :</strong></td>
+								<td><p t-field="o.ref"/></td>
+							</tr>
+						</tbody>
+					</table>
+
+					<br/>
+
+					<table style="width:100%;margin:0px auto;background:white;border:1px solid #e1e1e1;" class="table table-condensed">
+						<thead>
+							<tr>
+
+								<th>الحساب</th>
+								<th>الوصف</th>
+								<th>مدين</th>
+								<th>دائن</th>
+							</tr>
+						</thead>
+						<tbody class="consumed_tbody">
+							<t t-set="total" t-value="0.0"/>
+							<t t-set="total1" t-value="0.0"/>
+							<t t-foreach="o.line_ids" t-as="line">
+								<tr>
+
+									<td>
+										<span t-field="line.account_id" />
+									</td>
+									<td>
+										<span t-field="line.name" />
+									</td>
+									<td>
+										<span t-field="line.debit" />
+									</td>
+									<td>
+										<span t-field="line.credit" />
+									</td>
+								</tr>
+								<t t-set="total" t-value="total + line.debit"/>
+								<t t-set="total1" t-value="total1 + line.credit"/>
+							</t>
+							<tr>
+								<td><strong>الاجمالي:</strong></td>
+								<td></td>
+								<td width="10%"><strong>
+									<span><t t-esc="total"/></span>
+								</strong></td>
+								<td width="10%"><strong>
+									<span><t t-esc="total1"/></span>
+								</strong></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</t>
+		</template>
+
+		<template id="journal_entry_report_template_id">
+			<t t-call="web.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="bi_print_journal_entries.journal_entry_template_report_view"  t-lang="o.partner_id.lang"/>
+				</t>
+			</t>
+		</template>
+
+	</data>
+</odoo>
